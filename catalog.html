@@ -1,178 +1,152 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Каталог — Зачётка</title>
-  <meta name="description" content="Каталог учебных товаров магазина «Зачётка»: фильтры, сортировка, адаптивная сетка карточек.">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <script src="js/main.js" defer></script>
-</head>
-<body>
-  <a class="skip-link" href="#main">Перейти к содержимому</a>
+// Ищем элементы на странице
+const productsContainer = document.querySelector('[data-products-container]');
+const searchInput = document.querySelector('#catalog-search');
+const categoryFilter = document.querySelector('#category-filter');
+const sortSelect = document.querySelector('#sort-select');
+const catalogCount = document.querySelector('.catalog-count');
+const catalogEmpty = document.querySelector('.catalog-empty');
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="logo" href="index.html">🎓 Зачётка</a>
-      
-      <!-- Кнопка открытия корзины (Добавлена в шапку) -->
-      <button class="btn btn--primary btn--small cart-button" type="button" onclick="document.getElementById('cart-dialog').showModal()" style="margin-left: auto; margin-right: 16px;">
-        🛒 Корзина <span class="cart-count" hidden>0</span>
-      </button>
+// Состояние каталога
+const catalogState = {
+  query: '',
+  category: 'all',
+  sort: 'default'
+};
 
-      <button class="burger" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню">
-        <span></span><span></span><span></span>
-      </button>
-      <nav class="site-nav" id="site-nav" aria-label="Основная навигация">
-        <ul class="site-nav__list">
-          <li><a class="site-nav__link" href="index.html">Главная</a></li>
-          <li><a class="site-nav__link" href="catalog.html" aria-current="page">Каталог</a></li>
-          <li><a class="site-nav__link" href="product.html">Товар</a></li>
-          <li><a class="site-nav__link" href="order.html">Заявка</a></li>
-          <li><a class="site-nav__link" href="contacts.html">Контакты</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+// Функции обработки
+function searchProducts(products, query) {
+  const q = query.trim().toLowerCase();
+  if (q === '') return products;
+  return products.filter(p => p.title.toLowerCase().includes(q));
+}
 
-  <main id="main">
-    <section class="section">
-      <nav aria-label="Хлебные крошки">
-        <ol class="breadcrumbs">
-          <li><a href="index.html">Главная</a></li>
-          <li aria-current="page">Каталог</li>
-        </ol>
-      </nav>
-      <h1 class="page-title">Каталог товаров</h1>
-      <p>Все товары для учёбы: от ручек до техники. Используйте фильтры слева (на мобильном — сверху).</p>
+function filterProductsByCategory(products, category) {
+  if (category === 'all') return products;
+  return products.filter(p => p.category === category);
+}
 
-      <!-- НАЧАЛО БЛОКА КАТАЛОГА -->
-      <div class="catalog-layout">
-        <!-- Боковая панель фильтров -->
-        <aside class="catalog-filters" aria-label="Фильтры каталога">
-          <h2>Фильтры</h2>
-          <div class="catalog-controls">
-            <div class="catalog-controls__group">
-              <label for="catalog-search">Поиск</label>
-              <input type="search" id="catalog-search" class="order-form__input" placeholder="Название...">
-            </div>
-            <div class="catalog-controls__group">
-              <label for="category-filter">Категория</label>
-              <select id="category-filter" class="order-form__select">
-                <option value="all">Все категории</option>
-                <option value="bags">Рюкзаки и сумки</option>
-                <option value="stationery">Канцтовары</option>
-                <option value="tech">Техника</option>
-                <option value="light">Освещение</option>
-              </select>
-            </div>
-            <div class="catalog-controls__group">
-              <label for="sort-select">Сортировка</label>
-              <select id="sort-select" class="order-form__select">
-                <option value="default">По умолчанию</option>
-                <option value="price-asc">Сначала дешевле</option>
-                <option value="price-desc">Сначала дороже</option>
-                <option value="title-asc">По названию А-Я</option>
-              </select>
-            </div>
-          </div>
-        </aside>
+function sortProducts(products, sortType) {
+  const copy = [...products];
+  if (sortType === 'price-asc') return copy.sort((a, b) => a.price - b.price);
+  if (sortType === 'price-desc') return copy.sort((a, b) => b.price - a.price);
+  if (sortType === 'title-asc') return copy.sort((a, b) => a.title.localeCompare(b.title));
+  return copy;
+}
 
-        <!-- Список товаров -->
-        <section class="catalog-products" aria-label="Список товаров">
-          <div class="catalog-toolbar">
-            <p class="catalog-count" aria-live="polite">Загрузка...</p>
-          </div>
-          
-          <p class="catalog-empty" hidden>По вашему запросу ничего не найдено.</p>
-          
-          <!-- Сюда JavaScript вставит карточки -->
-          <div class="products-grid" data-products-container></div>
-        </section>
-      </div>
-      <!-- КОНЕЦ БЛОКА КАТАЛОГА -->
+function formatPrice(price) {
+  return `${price.toLocaleString('ru-RU')} ₽`;
+}
 
-    </section>
-  </main>
+// Создание карточки
+function createProductCard(product) {
+  const card = document.createElement('article');
+  card.classList.add('product-card');
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <h3>🎓 Зачётка</h3>
-        <p>Учебный магазин: канцтовары, аксессуары и техника для учёбы.</p>
-      </div>
-      <div>
-        <h3>Навигация</h3>
-        <ul class="footer-nav">
-          <li><a href="index.html">Главная</a></li>
-          <li><a href="catalog.html">Каталог</a></li>
-          <li><a href="product.html">Товар</a></li>
-          <li><a href="order.html">Заявка</a></li>
-          <li><a href="contacts.html">Контакты</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Контакты</h3>
-        <ul class="footer-nav">
-          <li><a href="mailto:info@zachetka.example">info@zachetka.example</a></li>
-          <li><a href="tel:+78000000000">8 (800) 000-00-00</a></li>
-          <li>г. Москва, ул. Студенческая, 12</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="container">© <span id="year">2026</span> «Зачётка». Контрольная работа №3 — адаптивная вёрстка.</div>
-    </div>
-  </footer>
+  const img = document.createElement('img');
+  img.src = `images/product-${product.id}-640.jpg`;
+  img.alt = product.title;
+  img.classList.add('product-card__image');
+  img.loading = 'lazy';
+  img.width = 640;
+  img.height = 480;
 
-  <!-- Модальное окно заявки -->
-  <dialog class="order-dialog" id="order-dialog" aria-labelledby="order-dialog-title">
-    <form class="order-form js-form" method="dialog">
-      <div class="order-form__group order-form__group--wide">
-        <h2 id="order-dialog-title">Оставить заявку</h2>
-      </div>
-      <div class="order-form__group">
-        <label class="order-form__label" for="dlg-name">Имя</label>
-        <input class="order-form__input" id="dlg-name" name="name" type="text" required autocomplete="name">
-      </div>
-      <div class="order-form__group">
-        <label class="order-form__label" for="dlg-email">E-mail</label>
-        <input class="order-form__input" id="dlg-email" name="email" type="email" required autocomplete="email">
-      </div>
-      <div class="order-form__group order-form__group--wide">
-        <label class="order-form__label" for="dlg-comment">Комментарий</label>
-        <textarea class="order-form__textarea" id="dlg-comment" name="comment" rows="3"></textarea>
-      </div>
-      <p class="form-success" role="status">Заявка отправлена! Мы свяжемся с вами.</p>
-      <div class="order-form__actions order-form__group--wide">
-        <button class="btn btn--primary" type="submit">Отправить</button>
-        <button class="btn btn--ghost" type="button" data-dialog-close>Закрыть</button>
-      </div>
-    </form>
-  </dialog>
+  const body = document.createElement('div');
+  body.classList.add('product-card__body');
 
-  <!-- Модальное окно КОРЗИНЫ -->
-  <dialog id="cart-dialog" class="order-dialog">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2 style="margin: 0;">Корзина</h2>
-      <button class="btn btn--ghost btn--small" data-cart-close type="button">✕</button>
-    </div>
-    <div class="cart-list"></div>
-    <div style="margin-top: 20px; font-size: 1.2rem; font-weight: bold; text-align: right;">
-      Итого: <span class="cart-total-price">0 ₽</span>
-    </div>
-    <div class="order-form__actions" style="margin-top: 20px;">
-      <a class="btn btn--primary" href="order.html">Оформить заказ</a>
-    </div>
-  </dialog>
+  const title = document.createElement('h3');
+  title.classList.add('product-card__title');
+  title.textContent = product.title;
 
-  <button class="back-to-top" type="button" aria-label="Наверх">↑</button>
+  const desc = document.createElement('p');
+  desc.classList.add('product-card__description');
+  desc.textContent = product.isAvailable ? 'В наличии' : 'Нет в наличии';
 
-  <!-- Подключение скриптов -->
-  <script src="js/data.js" defer></script>
-  <script src="js/catalog.js" defer></script>
-  <script src="js/cart.js" defer></script> <!-- Скрипт корзины -->
-  <script src="js/main.js" defer></script>
-</body>
-</html>
+  const footer = document.createElement('div');
+  footer.classList.add('product-card__footer');
+
+  const price = document.createElement('span');
+  price.classList.add('price');
+  price.textContent = formatPrice(product.price);
+
+  // Кнопка "Подробнее" (передает ID в ссылку)
+  const linkDetails = document.createElement('a');
+  linkDetails.href = `product.html?id=${product.id}`;
+  linkDetails.classList.add('btn', 'btn--ghost', 'btn--small');
+  linkDetails.textContent = 'Подробнее';
+
+  // Кнопка "В корзину"
+  const btn = document.createElement('button');
+  btn.classList.add('btn', 'btn--primary', 'btn--small');
+  btn.type = 'button';
+  btn.textContent = 'В корзину';
+  btn.dataset.action = 'add-to-cart';
+  btn.dataset.productId = product.id;
+  
+  if (!product.isAvailable) {
+    btn.disabled = true;
+    btn.textContent = 'Нет в наличии';
+    btn.classList.remove('btn--primary');
+    btn.classList.add('btn--ghost');
+  }
+
+  const buttonsWrapper = document.createElement('div');
+  buttonsWrapper.style.display = 'flex';
+  buttonsWrapper.style.gap = '8px';
+  buttonsWrapper.append(linkDetails, btn);
+
+  footer.append(price, buttonsWrapper);
+  body.append(title, desc, footer);
+  card.append(img, body);
+
+  return card;
+}
+
+// Вывод на страницу
+function renderProducts(productsToRender) {
+  productsContainer.textContent = ''; // Очищаем контейнер
+
+  if (catalogCount) {
+    catalogCount.textContent = `Найдено товаров: ${productsToRender.length}`;
+  }
+  if (catalogEmpty) {
+    catalogEmpty.hidden = productsToRender.length > 0;
+  }
+
+  productsToRender.forEach(product => {
+    productsContainer.append(createProductCard(product));
+  });
+}
+
+// Обновление каталога
+function updateCatalog() {
+  let result = [...products];
+  result = searchProducts(result, catalogState.query);
+  result = filterProductsByCategory(result, catalogState.category);
+  result = sortProducts(result, catalogState.sort);
+  renderProducts(result);
+}
+
+// Слушатели событий
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    catalogState.query = e.target.value;
+    updateCatalog();
+  });
+}
+if (categoryFilter) {
+  categoryFilter.addEventListener('change', (e) => {
+    catalogState.category = e.target.value;
+    updateCatalog();
+  });
+}
+if (sortSelect) {
+  sortSelect.addEventListener('change', (e) => {
+    catalogState.sort = e.target.value;
+    updateCatalog();
+  });
+}
+
+// Первичный рендер при загрузке
+if (productsContainer) {
+  updateCatalog();
+}

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Рюкзак «Студент» — Зачётка</title>
-  <meta name="description" content="Рюкзак «Студент»: характеристики, цена и наличие в учебном магазине «Зачётка». Адаптивная таблица характеристик.">
+  <title>Товар — Зачётка</title>
+  <meta name="description" content="Информация о товаре в учебном магазине «Зачётка».">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
   <script src="js/main.js" defer></script>
@@ -15,6 +15,12 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="logo" href="index.html">🎓 Зачётка</a>
+      
+      <!-- Кнопка корзины -->
+      <button class="btn btn--primary btn--small cart-button" type="button" onclick="document.getElementById('cart-dialog').showModal()" style="margin-left: auto; margin-right: 16px;">
+        🛒 Корзина <span class="cart-count" hidden>0</span>
+      </button>
+
       <button class="burger" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню">
         <span></span><span></span><span></span>
       </button>
@@ -36,54 +42,43 @@
         <ol class="breadcrumbs">
           <li><a href="index.html">Главная</a></li>
           <li><a href="catalog.html">Каталог</a></li>
-          <li aria-current="page">Рюкзак «Студент»</li>
+          <li aria-current="page" class="js-product-breadcrumb">Товар</li>
         </ol>
       </nav>
 
       <div class="product-page">
-        <!-- Галерея: picture (WebP + fallback) и srcset/sizes внутри img -->
         <div class="product-gallery">
-          <picture>
-            <img
-              src="images/product-1-640.jpg"
-              srcset="images/product-1-480.jpg 480w,
-                      images/product-1-640.jpg 640w,
-                      images/product-1-960.jpg 960w"
-              sizes="(max-width: 899px) 100vw, 50vw"
-              alt="Рюкзак «Студент» бордового цвета"
-              width="640"
-              height="480"
-              class="product-gallery__image"
-            >
-          </picture>
+          <img
+            src="images/product-1-640.jpg"
+            alt="Товар"
+            class="js-product-image product-gallery__image"
+            style="width: 100%; border-radius: 12px; object-fit: cover;"
+          >
         </div>
 
         <div class="product-info">
-          <h1 class="page-title">Рюкзак «Студент»</h1>
-          <span class="product-info__price">2 490 ₽</span>
+          <h1 class="page-title js-product-title">Загрузка товара...</h1>
+          <span class="product-info__price js-product-price">0 ₽</span>
           <p class="product-info__text">
-            Прочный рюкзак для ежедневных занятий: водоотталкивающий нейлон,
-            мягкая спинка и отдельное отделение для ноутбука до 15,6".
+            Отличный выбор для учёбы. Высокое качество и надёжность.
           </p>
           <ul class="product-meta">
-            <li><strong>Артикул:</strong> ZACH-001</li>
-            <li><strong>Категория:</strong> Рюкзаки и сумки</li>
-            <li><strong>Наличие:</strong> В наличии</li>
+            <li><strong>Статус:</strong> <span class="js-product-status">Загрузка...</span></li>
           </ul>
           <div class="product-info__actions">
-            <a class="btn btn--primary" href="order.html">Оставить заявку</a>
-            <button class="btn btn--ghost" type="button" data-dialog-open>Быстрый заказ</button>
+            <button class="btn btn--primary" type="button" onclick="document.getElementById('order-dialog').showModal()">Оставить заявку</button>
+            <a class="btn btn--ghost" href="catalog.html">Назад в каталог</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Таблица характеристик обёрнута в .table-wrapper: на мобильном — горизонтальная прокрутка -->
+    <!-- Таблица характеристик -->
     <section class="section">
       <h2 class="section__title">Характеристики</h2>
       <div class="table-wrapper">
         <table class="product-table">
-          <caption>Характеристики товара «Рюкзак Студент»</caption>
+          <caption>Характеристики товара</caption>
           <thead>
             <tr>
               <th scope="col">Параметр</th>
@@ -91,60 +86,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>Категория</td><td>Рюкзаки и сумки</td></tr>
-            <tr><td>Объём</td><td>20 л</td></tr>
-            <tr><td>Материал</td><td>Водоотталкивающий нейлон 600D</td></tr>
-            <tr><td>Отделение для ноутбука</td><td>До 15,6"</td></tr>
-            <tr><td>Вес</td><td>0,9 кг</td></tr>
-            <tr><td>Цвет</td><td>Бордовый</td></tr>
-            <tr><td>Цена</td><td>2 490 ₽</td></tr>
-            <tr><td>Наличие</td><td>В наличии</td></tr>
             <tr><td>Гарантия</td><td>12 месяцев</td></tr>
             <tr><td>Доставка</td><td>1–3 рабочих дня</td></tr>
+            <tr><td>Качество</td><td>Проверено магазином</td></tr>
           </tbody>
         </table>
-      </div>
-    </section>
-
-    <!-- Похожие товары -->
-    <section class="section">
-      <div class="section__head">
-        <h2 class="section__title">Похожие товары</h2>
-      </div>
-      <div class="products-grid">
-        <article class="product-card">
-          <img src="images/product-2-640.jpg" alt="Набор цветных тетрадей" width="640" height="480" loading="lazy" class="product-card__image">
-          <div class="product-card__body">
-            <h3 class="product-card__title">Набор тетрадей «Курс»</h3>
-            <p class="product-card__description">5 тетрадей в клетку по 48 листов.</p>
-            <div class="product-card__footer">
-              <span class="price">890 ₽</span>
-              <a class="btn btn--ghost btn--small" href="product.html">Подробнее</a>
-            </div>
-          </div>
-        </article>
-        <article class="product-card">
-          <img src="images/product-5-640.jpg" alt="Термос из нержавеющей стали" width="640" height="480" loading="lazy" class="product-card__image">
-          <div class="product-card__body">
-            <h3 class="product-card__title">Термос «Горячий»</h3>
-            <p class="product-card__description">0,5 л, держит тепло 12 часов.</p>
-            <div class="product-card__footer">
-              <span class="price">1 290 ₽</span>
-              <a class="btn btn--ghost btn--small" href="product.html">Подробнее</a>
-            </div>
-          </div>
-        </article>
-        <article class="product-card">
-          <img src="images/product-6-640.jpg" alt="Настольная LED-лампа" width="640" height="480" loading="lazy" class="product-card__image">
-          <div class="product-card__body">
-            <h3 class="product-card__title">Лампа «Светлячок»</h3>
-            <p class="product-card__description">LED-лампа с регулировкой яркости.</p>
-            <div class="product-card__footer">
-              <span class="price">1 890 ₽</span>
-              <a class="btn btn--ghost btn--small" href="product.html">Подробнее</a>
-            </div>
-          </div>
-        </article>
       </div>
     </section>
   </main>
@@ -179,6 +125,7 @@
     </div>
   </footer>
 
+  <!-- Модальное окно заявки -->
   <dialog class="order-dialog" id="order-dialog" aria-labelledby="order-dialog-title">
     <form class="order-form js-form" method="dialog">
       <div class="order-form__group order-form__group--wide">
@@ -194,7 +141,7 @@
       </div>
       <div class="order-form__group order-form__group--wide">
         <label class="order-form__label" for="dlg-comment">Комментарий</label>
-        <textarea class="order-form__textarea" id="dlg-comment" name="comment" rows="3">Рюкзак «Студент»</textarea>
+        <textarea class="order-form__textarea" id="dlg-comment" name="comment" rows="3"></textarea>
       </div>
       <p class="form-success" role="status">Заявка отправлена! Мы свяжемся с вами.</p>
       <div class="order-form__actions order-form__group--wide">
@@ -204,6 +151,27 @@
     </form>
   </dialog>
 
+  <!-- Модальное окно КОРЗИНЫ -->
+  <dialog id="cart-dialog" class="order-dialog">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 style="margin: 0;">Корзина</h2>
+      <button class="btn btn--ghost btn--small" data-cart-close type="button">✕</button>
+    </div>
+    <div class="cart-list"></div>
+    <div style="margin-top: 20px; font-size: 1.2rem; font-weight: bold; text-align: right;">
+      Итого: <span class="cart-total-price">0 ₽</span>
+    </div>
+    <div class="order-form__actions" style="margin-top: 20px;">
+      <a class="btn btn--primary" href="order.html">Оформить заказ</a>
+    </div>
+  </dialog>
+
   <button class="back-to-top" type="button" aria-label="Наверх">↑</button>
+
+  <!-- Подключение скриптов -->
+  <script src="js/data.js" defer></script>
+  <script src="js/product.js" defer></script>
+  <script src="js/cart.js" defer></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
