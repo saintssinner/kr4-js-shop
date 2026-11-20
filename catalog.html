@@ -15,6 +15,12 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="logo" href="index.html">🎓 Зачётка</a>
+      
+      <!-- Кнопка открытия корзины (Добавлена в шапку) -->
+      <button class="btn btn--primary btn--small cart-button" type="button" onclick="document.getElementById('cart-dialog').showModal()" style="margin-left: auto; margin-right: 16px;">
+        🛒 Корзина <span class="cart-count" hidden>0</span>
+      </button>
+
       <button class="burger" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню">
         <span></span><span></span><span></span>
       </button>
@@ -120,6 +126,7 @@
     </div>
   </footer>
 
+  <!-- Модальное окно заявки -->
   <dialog class="order-dialog" id="order-dialog" aria-labelledby="order-dialog-title">
     <form class="order-form js-form" method="dialog">
       <div class="order-form__group order-form__group--wide">
@@ -145,11 +152,27 @@
     </form>
   </dialog>
 
+  <!-- Модальное окно КОРЗИНЫ -->
+  <dialog id="cart-dialog" class="order-dialog">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 style="margin: 0;">Корзина</h2>
+      <button class="btn btn--ghost btn--small" data-cart-close type="button">✕</button>
+    </div>
+    <div class="cart-list"></div>
+    <div style="margin-top: 20px; font-size: 1.2rem; font-weight: bold; text-align: right;">
+      Итого: <span class="cart-total-price">0 ₽</span>
+    </div>
+    <div class="order-form__actions" style="margin-top: 20px;">
+      <a class="btn btn--primary" href="order.html">Оформить заказ</a>
+    </div>
+  </dialog>
+
   <button class="back-to-top" type="button" aria-label="Наверх">↑</button>
 
   <!-- Подключение скриптов -->
   <script src="js/data.js" defer></script>
   <script src="js/catalog.js" defer></script>
+  <script src="js/cart.js" defer></script> <!-- Скрипт корзины -->
   <script src="js/main.js" defer></script>
 </body>
 </html>
